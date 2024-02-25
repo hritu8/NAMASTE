@@ -4,7 +4,7 @@ import ReactDOM from "react-dom/client";
 // React.createElement =>object=>HTML(DOM)
 
 // JSX => React.createElement =>object =>HTML(DOM)
-const Title = (
+const Title = () => (
   <h1 id="title" key="h2">
     Namaste React
   </h1>
@@ -18,7 +18,7 @@ const Title = (
 const HeaderComponent = () => {
   return (
     <div>
-      {Title}
+      {Title()}
       <h1 id="title">Namaste React functional component</h1>
     </div>
   );
