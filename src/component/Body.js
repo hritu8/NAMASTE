@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import { swiggy_api_URL } from "../constant";
 import RestaurantCard from "./RestaurantCard";
 import Shimmer from "./shimmer";
+import { Link } from "react-router-dom";
 
 function filterData(searchText, filteredRestaurants) {
   const filterdata = filteredRestaurants.filter((restaurant) =>
-    restaurant?.action?.text.toLowerCase().includes(searchText.toLowerCase())
+    restaurant?.info?.name.toLowerCase().includes(searchText.toLowerCase())
   );
   return filterdata;
 }
@@ -24,18 +25,14 @@ const Body = () => {
   async function getRestaurants() {
     const data = await fetch(swiggy_api_URL);
     const json = await data.json();
-    // console.log(
-    //   json?.data?.cards[0]?.card?.card?.gridElements?.infoWithStyle?.info
-    // );
-    // call the checkJsonData() function which return Swiggy Restaurant data
-
-    // update the state variable restaurants with Swiggy API data
-
+    console.log(
+      json?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle?.restaurants
+    );
     setAllRestaurants(
-      json?.data?.cards[0]?.card?.card?.gridElements?.infoWithStyle?.info
+      json?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle?.restaurants
     );
     setFilteredRestaurants(
-      json?.data?.cards[0]?.card?.card?.gridElements?.infoWithStyle?.info
+      json?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle?.restaurants
     );
   }
   if (allRestaurants === null) return null;
@@ -74,7 +71,14 @@ const Body = () => {
       ) : (
         <div className="restaurant-list">
           {filteredRestaurants.map((restaurant) => {
-            return <RestaurantCard {...restaurant} key={restaurant?.id} />;
+            return (
+              <Link
+                to={"restaurant/" + restaurant?.info?.id}
+                key={restaurant?.info?.id}
+              >
+                <RestaurantCard {...restaurant?.info} />
+              </Link>
+            );
           })}
         </div>
       )}

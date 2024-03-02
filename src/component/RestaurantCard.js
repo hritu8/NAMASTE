@@ -2,19 +2,16 @@ import { IMG_CDN_URL } from "../constant";
 
 // Restaurant card component: Image, name, cuisine
 const RestaurantCard = ({
-  imageId,
-  // text,
-  // lastMileTravelString,
-  // costForTwoString,
-  // avgRating,
-  action,
+  cloudinaryImageId,
+  name,
+  sla,
+  costForTwoString,
+  avgRating,
 }) => {
   return (
     <div className="card">
-      <img src={IMG_CDN_URL + imageId} />
-      <h2>{action.text}</h2>
-      {/* <h2>{text}</h2>
-
+      <img src={IMG_CDN_URL + cloudinaryImageId} />
+      <h2>{name}</h2>
       <span>
         <h4
           style={
@@ -24,9 +21,9 @@ const RestaurantCard = ({
           <i className="fa-solid fa-star"></i>
           {avgRating}
         </h4>
-        <h4>{lastMileTravelString}</h4>
+        <h4>{sla.lastMileTravelString}</h4>
         <h4>{costForTwoString}</h4>
-      </span> */}
+      </span>
     </div>
   );
 };
