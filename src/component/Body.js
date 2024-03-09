@@ -1,38 +1,30 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { swiggy_api_URL } from "../constant";
 import RestaurantCard from "./RestaurantCard";
 import Shimmer from "./shimmer";
 import { Link } from "react-router-dom";
+import { filterData } from "../utils.js/helper";
+import useOnline from "../utils.js/useOnline";
+import useResData from "../utils.js/useResData";
+import userContext from "../utils.js/userContext";
 
-function filterData(searchText, filteredRestaurants) {
-  const filterdata = filteredRestaurants.filter((restaurant) =>
-    restaurant?.info?.name.toLowerCase().includes(searchText.toLowerCase())
-  );
-  return filterdata;
-}
-
-const Body = () => {
+const Body = ({}) => {
   //   const  searchTxt = "";
   // const [allRestaurants, setAllRestaurants] = useState(restaurantList);
-  const [allRestaurants, setAllRestaurants] = useState([]);
-  const [filteredRestaurants, setFilteredRestaurants] = useState([]);
+  // const [allRestaurants, setAllRestaurants] = useState([]);
+  // const [filteredRestaurants, setFilteredRestaurants] = useState([]);
   const [searchText, setSearchText] = useState(""); //To create state Variable
-
-  useEffect(() => {
-    getRestaurants();
-  }, []);
-
-  async function getRestaurants() {
-    const data = await fetch(swiggy_api_URL);
-    const json = await data.json();
-    console.log(
-      json?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle?.restaurants
-    );
-    setAllRestaurants(
-      json?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle?.restaurants
-    );
-    setFilteredRestaurants(
-      json?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle?.restaurants
+  const [allRestaurants, filRes] = useResData(swiggy_api_URL);
+  const [filteredRestaurants, setFilteredRestaurants] = useState(null);
+  const { user, setUser } = useContext(userContext);
+  const isOnline = useOnline();
+  if (!isOnline) {
+    return (
+      <div className="offline">
+        <h1>🔴 offline , Please check your internet connection</h1>
+        <h1>🔴 offline , Please check your internet connection</h1>
+        <h1>🔴 offline , Please check your internet connection</h1>
+      </div>
     );
   }
   if (allRestaurants === null) return null;
@@ -42,7 +34,7 @@ const Body = () => {
     <Shimmer />
   ) : (
     <>
-      <div className="search-container">
+      <div className="search-container p-5 my-5 bg-pink-100">
         <input
           type="text"
           className="search-input"
@@ -55,7 +47,7 @@ const Body = () => {
         />
 
         <button
-          className="search-btn"
+          className="search-btn p-2 m-2 bg-purple-400 text-white rounded-sm"
           onClick={() => {
             // need to filter the data
             const data = filterData(searchText, allRestaurants);
@@ -65,21 +57,32 @@ const Body = () => {
         >
           Search
         </button>
+        <input
+          value={user.name}
+          onChange={(e) =>
+            setUser({
+              name: e.target.value,
+              email: "new@gmail.com",
+            })
+          }
+        ></input>
       </div>
-      {filteredRestaurants.length === 0 ? (
-        <h1>No Restaurant match your filter criteria</h1>
+      {allRestaurants.length === 0 && filteredRestaurants.length === 0 ? (
+        <Shimmer />
       ) : (
-        <div className="restaurant-list">
-          {filteredRestaurants.map((restaurant) => {
-            return (
-              <Link
-                to={"restaurant/" + restaurant?.info?.id}
-                key={restaurant?.info?.id}
-              >
-                <RestaurantCard {...restaurant?.info} />
-              </Link>
-            );
-          })}
+        <div className="restaurant-list flex flex-wrap justify-between">
+          {(filteredRestaurants === null ? filRes : filteredRestaurants).map(
+            (restaurant) => {
+              return (
+                <Link
+                  to={"restaurant/" + restaurant?.info?.id}
+                  key={restaurant?.info?.id}
+                >
+                  <RestaurantCard {...restaurant?.info} user={user} />
+                </Link>
+              );
+            }
+          )}
         </div>
       )}
     </>

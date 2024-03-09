@@ -451,3 +451,13 @@ a {
 .about-container {
   margin: 100px auto 30px;
 }
+
+/* offline */
+.offline {
+  margin-top: 5rem;
+}
+
+/* instamart */
+.instamart-component {
+  margin-top: 5rem;
+}

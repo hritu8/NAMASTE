@@ -53,7 +53,7 @@ export const MenuShimmer = () => {
   );
 };
 
-const shimmer = () => {
+const Shimmer = () => {
   return (
     <div className="shimmer-container">
       {/* create a new Array instance using Array() constructor and map through every element of array */}
@@ -65,4 +65,4 @@ const shimmer = () => {
     </div>
   );
 };
-export default shimmer;
+export default Shimmer;
